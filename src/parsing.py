@@ -6,7 +6,7 @@ from langdetect import detect, detect_langs
 Parse activation sentences/tokens from feature's json data.
 """
 def get_activation_sentences(json_data, window, num_samples):
-  germanic_languages = {'en', 'de', 'nl', 'sv', 'da', 'no', 'is', 'af'}
+  # germanic_languages = {'en', 'de', 'nl', 'sv', 'da', 'no', 'is', 'af'}
   activation_sentences = []
   activation_token_counts = {}
   if "activations" not in json_data: return activation_sentences, activation_token_counts
@@ -18,10 +18,10 @@ def get_activation_sentences(json_data, window, num_samples):
     tokens = tokens[max(0, maxValueIndex - window):min(len(tokens), maxValueIndex+window)]
     sentence = "".join(tokens).replace('▁', ' ')
     try:
-      if detect(sentence) in germanic_languages:
-        activation_token_counts[activating_token] = activation_token_counts.get(activating_token, 0) + 1
-        if len(activation_sentences) == 0 or activation_sentences[-1] != sentence:
-          activation_sentences.append(sentence)
+      # if detect(sentence) in germanic_languages:
+      activation_token_counts[activating_token] = activation_token_counts.get(activating_token, 0) + 1
+      if len(activation_sentences) == 0 or activation_sentences[-1] != sentence:
+        activation_sentences.append(sentence)
     except:
       continue
     if len(activation_sentences) == num_samples: break
@@ -34,12 +34,13 @@ See https://www.neuronpedia.org/api-doc#tag/lookup/GET/api/feature/{modelId}/{la
 """
 def get_feature(model, layer, index, api_key):
   print(model, layer, index)
-  conn = http.client.HTTPSConnection("www.neuronpedia.com")
+  conn = http.client.HTTPSConnection("www.neuronpedia.org")
   headers = {"X-Api-Key": api_key}
   conn.request("GET", f"/api/feature/{model}/{layer}/{index}", headers=headers)
   res = conn.getresponse()
   data = res.read()
-  return data
+  # data = data.decode("utf-8")
+  return json.loads(data)
 
 """
 Get feature from a Neuronpedia link.
