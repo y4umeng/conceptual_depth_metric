@@ -27,6 +27,20 @@ def get_activation_sentences(json_data, window, num_samples):
     if len(activation_sentences) == num_samples: break
   return activation_sentences, activation_token_counts
 
+"""
+Parse activation sentences/values from feature's json data
+"""
+def get_activation_sentences_with_weights(json_data, num_samples=1000):
+  sentences = []
+  weights = []
+  if "activations" not in json_data: return sentences, weights
+  for sentence_data in json_data["activations"]:
+    if "tokens" not in sentence_data or  "values" not in sentence_data: continue
+    sentences.append("".join(sentence_data["tokens"]).replace('▁', ' '))
+    weights.append(sentence_data["values"])
+    if len(sentences) == num_samples: break
+  return sentences, weights
+
 
 """
 Get feature data using Neuronpedia API.

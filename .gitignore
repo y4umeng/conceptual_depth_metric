@@ -163,5 +163,6 @@ cython_debug/
 
 #custom
 data/gemma-2-2b-gemmascope-res-16k/
-.DS_Store/
+.DS_Store
 data/.DS_Store
+*.ipynb
