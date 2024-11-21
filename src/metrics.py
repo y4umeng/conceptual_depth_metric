@@ -50,6 +50,16 @@ def filter_empty_weights(sentences, weights):
       new_weights.append(weight)
   return new_sentences, new_weights
 
+# Adjust the weights array
+def adjust_weights(w, target_length):
+    if len(w) > target_length:
+        # Trim the weights
+        return w[:target_length]
+    elif len(w) < target_length:
+        # Zero-pad the weights
+        return np.pad(w, (0, target_length - len(w)))
+    return w
+
 """
 
 """
@@ -60,6 +70,11 @@ def get_activation_semantic_similarity(model, tokenizer, sentences, weights):
   for a, w, s in zip(activations, weights, sentences):
     a = np.array(a)
     w = np.array(w)
+    # print(f"activations: {a.shape}")
+    # print(f"weights: {w.shape}")
+    # print(w.sum())
+    # print(s)
+    w = adjust_weights(w, a.shape[1])
     # Compute weighted average of output activations
     embeddings.append(np.squeeze(np.average(a, axis=1, weights=w)))
   return mean_cos_sim(embeddings)
@@ -75,6 +90,7 @@ def get_activation_naive_similarity_by_token(model, tokenizer, sentences, weight
     w = [weight for weight in w if weight > 0.0]
     a = np.array(a)
     w = np.array(w)
+    w = adjust_weights(w, a.shape[0])
     # Compute weighted average of output activations
     embeddings.append(np.squeeze(np.average(a, axis=0, weights=w)))
   return mean_cos_sim(embeddings)
