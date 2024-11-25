@@ -46,6 +46,6 @@ def evaluate_metric(directory, model, tokenizer):
 
 if __name__ == "__main__":
     tokenizer, model = load_gemma2b_model(device="cuda")
-    directory = "../data/gemma-2-2b-gemmascope-res-16k/20-gemmascope-res-16k"
+    directory = "data/gemma-2-2b-gemmascope-res-16k/20-gemmascope-res-16k"
     evaluate_metric(directory, model, tokenizer)
             
