@@ -2,12 +2,13 @@ import torch
 import transformers
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import numpy as np
+import os
 
 def load_gemma2b_model(device="mps"):
     # Load the tokenizer and the model for Gemma2 2B
     model_name = "google/gemma-2-2b"  # You need to replace with the correct path or model identifier
-    tokenizer = AutoTokenizer.from_pretrained(model_name, token=True)
-    model = AutoModelForCausalLM.from_pretrained(model_name, output_hidden_states=True, token=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, token=os.environ['HF_TOKEN'])
+    model = AutoModelForCausalLM.from_pretrained(model_name, output_hidden_states=True, token=os.environ['HF_TOKEN'])
     model = model.to(device)
     return tokenizer, model
 
