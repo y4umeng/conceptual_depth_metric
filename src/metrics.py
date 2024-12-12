@@ -70,10 +70,6 @@ def get_activation_semantic_similarity(model, tokenizer, sentences, weights):
   for a, w, s in zip(activations, weights, sentences):
     a = np.array(a)
     w = np.array(w)
-    # print(f"activations: {a.shape}")
-    # print(f"weights: {w.shape}")
-    # print(w.sum())
-    # print(s)
     w = adjust_weights(w, a.shape[1])
     # Compute weighted average of output activations
     embeddings.append(np.squeeze(np.average(a, axis=1, weights=w)))

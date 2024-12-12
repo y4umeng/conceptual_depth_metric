@@ -4,7 +4,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import numpy as np
 import os
 
-def load_gemma2b_model(device="mps"):
+def load_gemma2b_model(device="cuda"):
     # Load the tokenizer and the model for Gemma2 2B
     model_name = "google/gemma-2-2b"  # You need to replace with the correct path or model identifier
     tokenizer = AutoTokenizer.from_pretrained(model_name, token=os.environ['HF_TOKEN'])
@@ -12,7 +12,7 @@ def load_gemma2b_model(device="mps"):
     model = model.to(device)
     return tokenizer, model
 
-def get_activations(input_text, model, tokenizer, device="mps"):
+def get_activations(input_text, model, tokenizer, device="cuda"):
     # Tokenize the input text
     inputs = tokenizer(input_text, return_tensors='pt', add_special_tokens=False).to(device)
     
@@ -28,7 +28,7 @@ def get_activations(input_text, model, tokenizer, device="mps"):
 """
 
 """
-def get_activations_by_token(input_text, weights, model, tokenizer, device="mps"):
+def get_activations_by_token(input_text, weights, model, tokenizer, device="cuda"):
     # Tokenize the input text
     tokens = tokenizer(input_text, return_tensors='pt', add_special_tokens=False).to(device)
     input_ids = tokens['input_ids'].squeeze(0)
@@ -77,11 +77,7 @@ def get_activations_word_by_word(input_text, weights, model, tokenizer):
     
     # Iterate through each word and get the activations
     for word in words:
-        inputs = tokenizer(word, return_tensors='pt')
-        
-        # Move inputs to MPS if available
-        if torch.backends.mps.is_available():
-            inputs = {k: v.to("mps") for k, v in inputs.items()}
+        inputs = tokenizer(word, return_tensors='pt').to("cuda")
         
         # Run the model and get the output
         with torch.no_grad():
